@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import axios from "axios";
 import { DragDropContext } from "@hello-pangea/dnd";
 import {
   ArrowLeft,
@@ -166,7 +167,13 @@ const TaskPage = () => {
     setConfirmingDelete(false);
     setEditorOpen(true);
   };
+  const createReminderForDueTasks = async() => {
+    const response = await axios.post("http://localhost:3000/issues", {
+      members
+    })
+    const data = response.json();
 
+  }
   const saveTask = async (event) => {
     event.preventDefault();
     const title = draft.title.trim();
@@ -197,6 +204,11 @@ const TaskPage = () => {
         showBoardNotice("Task updated.");
       } else {
         const { data } = await api.post("/issue", payload);
+        if (payload.dueDate === payload.assignedMemberId){
+          return (
+            <p>Your task date is due plese complete your task in given time </p>
+          )
+        }
         setIssues((current) => [...current, data.issue]);
         showBoardNotice("Task added to the board.");
       }

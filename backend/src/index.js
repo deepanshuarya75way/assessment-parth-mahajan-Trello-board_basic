@@ -937,6 +937,12 @@ app.post(
       priority,
       dueDate: hasOwn(req.body, "dueDate") ? parseDueDate(req.body.dueDate) : null,
     });
+    const assignedTasks = assignedInput;
+    if (issues.assignedTo){
+     setTimeout(() => {
+      console.log("your task is pending please complete it before due date")
+     }, 86400000)
+    }
     await clearAssigneeIfAccessWasRevoked(issue, organization._id);
     const populatedIssue = await issueModel
       .findById(issue._id)
