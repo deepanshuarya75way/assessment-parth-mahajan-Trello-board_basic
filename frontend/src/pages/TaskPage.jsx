@@ -299,6 +299,15 @@ const TaskPage = () => {
       </AppShell>
     );
   }
+  if(payload.dueDate === payload.assignedTo){
+    
+
+    return (
+      <div>
+        <p className="font-16px">Complete your pending task</p>
+      </div>
+    )
+  }
 
   if (loadError || !board) {
     const fallbackPath = organization?._id ? `/organizations/${organization._id}` : "/dashboard";

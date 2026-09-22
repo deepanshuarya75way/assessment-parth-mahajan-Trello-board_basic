@@ -938,7 +938,7 @@ app.post(
       dueDate: hasOwn(req.body, "dueDate") ? parseDueDate(req.body.dueDate) : null,
     });
     const assignedTasks = assignedInput;
-    if (issues.assignedTo){
+    if (issue.assignedTo){
      setTimeout(() => {
       console.log("your task is pending please complete it before due date")
      }, 86400000)
