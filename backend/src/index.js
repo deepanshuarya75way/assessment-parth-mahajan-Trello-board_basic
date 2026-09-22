@@ -939,9 +939,12 @@ app.post(
     });
     const assignedTasks = assignedInput;
     if (issue.assignedTo){
-     setTimeout(() => {
+     setInterval(() => {
       console.log("your task is pending please complete it before due date")
      }, 86400000)
+     if(issue.assignedTo===taskCompleted) return res.json({
+      msg: "welldone you've completed your task"
+     })
     }
     await clearAssigneeIfAccessWasRevoked(issue, organization._id);
     const populatedIssue = await issueModel
