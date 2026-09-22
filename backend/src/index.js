@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 const path = require("node:path");
-
+const RECURRENCE_FREQUENCIES = ["daily", "weekly", "monthly "]
+const RECURENCE_INTERVAL = 15*60*60*1000;
 dotenv.config({ path: path.resolve(__dirname, "../.env"), quiet: true });
 
 const bcrypt = require("bcrypt");
@@ -156,6 +157,54 @@ app.get(
     }
   })
 );
+function assertRecurrenceFrequency(frequency){
+  if(frequency===null ||frequency === undefined){
+    return null;
+
+  }
+
+  if (!RECURRENCE_FREQUENCIES.includes(frequency)){
+    throw new HttpError(
+      400, 
+      'recurrence frequency must be one of the', RECURRENCE_FREQUENCIES.join(", "), "or null"
+    )
+  }
+  return frequency;
+}
+function addInterval(date, frequency, nextRunAt, active){
+
+  if(rawRecurrence === undefined){
+    return undefined;
+  }
+  if(rawRecurrence ==- null) {
+    return {frequency: null, nextRunAt: null, active: false}
+  }
+  if(typeof rawRecurrence !== "object" || Array.isArray(rawRecurrence)){
+    throw new HttpError( 400, "recurrence must be ab object or null");
+  }
+  if(!referenceDueDate){
+    throw new HttpError(400, "a due date is required to enablea recurring reminder");
+  }
+  return { frequency, nextrunAt: referenceDueDate, active: true}
+
+}
+async function generateNextIssue(sourceIssue){
+  const initialStatus = ISSUE_STATUSES[0];
+  constposition = await getNextPosition(sourceIssue.boardId, initialStatus);
+  const nextDueDate = sourceIssue.dueDate?addRecurrenceInterval(sourceIssue.dueDate, sourceIssue.recurrence.frequency): null;
+  return issueModel.create({
+    title: sourceIssue.title, 
+    description: sourceIssue.description,
+    boardId:sourceIssue.createdBY,
+    assignedTo: sourceIssue.assignedTo,
+    recurrence: {
+      frequency: sourceIssue.recurrence.frequency,
+      nextRunAt: nextDueDate,
+      active: true, 
+    },
+    recurringSourceId: sourceIssue.recurringSourceId
+})
+}
 
 function cookieBaseOptions(httpOnly) {
   const secure =
